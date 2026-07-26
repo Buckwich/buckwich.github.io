@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-black text-white font-sans antialiased;
+}
+
+::selection {
+  @apply bg-white text-black;
+}
+
+/* uniform stroke on the WHOLE headline: filled spans keep fill,
+   "hollow" spans use text-transparent — same geometry, no size offset */
+.stroke-title {
+  -webkit-text-stroke: 0.03em #fff;
+  paint-order: stroke fill;
+}
+
+.stroke-title-dark {
+  -webkit-text-stroke: 0.03em #000;
+  paint-order: stroke fill;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 24s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}

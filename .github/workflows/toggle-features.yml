@@ -1,0 +1,38 @@
+name: Toggle features
+
+on:
+  workflow_dispatch:
+    inputs:
+      contact:
+        description: 'Show "Get in touch" section'
+        type: boolean
+        default: true
+      openToWork:
+        description: 'Show "Open to work" badge'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  toggle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Write feature defaults
+        run: |
+          printf '// Default flag values. Rewritten by the "Toggle features" GitHub workflow.\nexport const DEFAULT_FEATURES = {\n  contact: %s,\n  openToWork: %s,\n}\n' \
+            "${{ inputs.contact }}" "${{ inputs.openToWork }}" > src/features.defaults.js
+      - name: Commit & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/features.defaults.js
+          git diff --cached --quiet || git commit -m "chore: toggle features (contact=${{ inputs.contact }}, openToWork=${{ inputs.openToWork }})"
+          git push
+      - name: Trigger Pages rebuild
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run pages.yml

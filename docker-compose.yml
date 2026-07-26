@@ -1,0 +1,20 @@
+services:
+  # production build -> http://localhost:8080
+  web:
+    build: .
+    ports:
+      - "8080:80"
+
+  # dev server with hot reload -> http://localhost:5173
+  dev:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm ci && npm run dev"
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+
+volumes:
+  node_modules:
